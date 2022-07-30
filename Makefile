@@ -1,0 +1,99 @@
+###########################################################
+# Developer's Guide
+###########################################################
+#
+# All tasks should be explicitly marked as .PHONY at the
+# top of the section.
+#
+# We distinguish two types of tasks: private and public.
+#
+# "Public" tasks should be created with the description
+# using ## comment format:
+#
+#   public-task: task-dependency ## Task description
+#
+# Private tasks should start with "_". There should be no
+# description E.g.:
+#
+#   _private-task: task-dependency
+#
+
+###########################################################
+# Setup
+###########################################################
+
+# Include .env file
+ifneq (,$(wildcard ./.env))
+    include .env
+    export
+endif
+
+###########################################################
+# Project directories
+###########################################################
+
+root_dir := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+
+###########################################################
+# Config
+###########################################################
+
+cache_dir := "$(root_dir)/.cache"
+tag := $(shell git describe --tags --abbrev=0 2>/dev/null || echo "vUNKNOWN")
+local_image := sitin/mavsdk-server:local
+
+###########################################################
+# Help
+###########################################################
+.PHONY: help
+
+help: ## Shows help
+	@printf "\033[33m%s:\033[0m\n" 'Use: make <command> where <command> one of the following'
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  \033[32m%-18s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+
+info: ## Prints project info
+	@echo "Version: $(version)"
+
+###########################################################
+# Building
+###########################################################
+.PHONY: build
+
+build: ## Builds project
+	@docker build \
+    	--build-arg MAVSDK_TAG="$(tag)" \
+    	--tag "$(local_image)" \
+    	--file Dockerfile .
+
+###########################################################
+# Running
+###########################################################
+.PHONY: up
+
+up: ## Starts all services in Docker
+	@docker run --rm --sig-proxy=false "$(local_image)"
+
+###########################################################
+# Testing
+###########################################################
+.PHONY: test
+
+test: ## Run tests
+	@echo "Creating builds for all platforms"
+	@docker buildx create --use && \
+	docker buildx build \
+		--build-arg MAVSDK_TAG="$(tag)" \
+		--platform linux/arm64/v8,linux/amd64,linux/arm/v6,linux/arm/v7 \
+		--tag sitin/mavsdk-server:local \
+		--file Dockerfile .
+
+
+###########################################################
+# Cleaning
+###########################################################
+.PHONY: clean rmi
+
+clean: rmi ## Cleans environment
+
+rmi: ## Removes image
+	docker rmi -f "$(local_image)"
