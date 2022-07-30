@@ -71,7 +71,7 @@ build: ## Builds project
 .PHONY: up
 
 up: ## Starts all services in Docker
-	@docker run --rm --sig-proxy=false "$(local_image)"
+	@docker run --rm --sig-proxy=false -p 50051:50051 -p 14540:14540/udp "$(local_image)"
 
 ###########################################################
 # Testing
@@ -91,9 +91,12 @@ test: ## Run tests
 ###########################################################
 # Cleaning
 ###########################################################
-.PHONY: clean rmi
+.PHONY: clean rmi kill-kill-kill
 
 clean: rmi ## Cleans environment
 
 rmi: ## Removes image
 	docker rmi -f "$(local_image)"
+
+kill-kill-kill: ## Stop all Docker containers
+	@docker stop $(docker ps -q)  # TODO: make this run in GNU/Make
