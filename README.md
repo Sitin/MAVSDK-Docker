@@ -1,6 +1,9 @@
 MAVSDK-Docker
 =============
 
+[![Publish to Docker registry](https://github.com/Sitin/MAVSDK-Docker/actions/workflows/main.yml/badge.svg)](https://github.com/Sitin/MAVSDK-Docker/actions/workflows/main.yml)
+[![Update latest tag according to MAVSDK](https://github.com/Sitin/MAVSDK-Docker/actions/workflows/update-tags.yml/badge.svg)](https://github.com/Sitin/MAVSDK-Docker/actions/workflows/update-tags.yml)
+
 Dockerized [MAVSDK](https://github.com/mavlink/MAVSDK) server.
 
 [DockerHub](https://hub.docker.com/r/sitin/mavsdk).
