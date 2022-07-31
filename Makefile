@@ -99,4 +99,4 @@ rmi: ## Removes image
 	docker rmi -f "$(local_image)"
 
 kill-kill-kill: ## Stop all Docker containers
-	@docker stop $(docker ps -q)  # TODO: make this run in GNU/Make
+	@docker stop $(shell docker ps -q)
