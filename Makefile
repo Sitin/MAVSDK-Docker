@@ -84,7 +84,7 @@ test: ## Run tests
 	docker buildx build \
 		--build-arg MAVSDK_TAG="$(tag)" \
 		--platform linux/arm64/v8,linux/amd64,linux/arm/v6,linux/arm/v7 \
-		--tag sitin/mavsdk-server:local \
+		--tag "$(local_image)" \
 		--file Dockerfile .
 
 
