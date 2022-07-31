@@ -22,7 +22,7 @@ Run the `1.4.4` image (we use `-sig-proxy=false` to allow Ctr+C) on gRPC port (`
 incoming MAVLink connections (`14540` by default):
 
 ```shell
-docker run --rm --sig-proxy=false -p 50051:50051 -p 14540:14540/udp -- sitin/mavsdk:1.4.4 -p 50051
+docker run --rm --sig-proxy=false -p 50051:50051 -p 14540:14540/udp sitin/mavsdk:1.4.4 -p 50051
 ```
 
 Development

@@ -39,7 +39,7 @@ root_dir := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 ###########################################################
 
 cache_dir := "$(root_dir)/.cache"
-tag := $(shell git describe --tags --abbrev=0 2>/dev/null || echo "vUNKNOWN")
+tag := $(shell git describe --tags --abbrev=0 2>/dev/null)
 local_image := sitin/mavsdk-server:local
 
 ###########################################################
