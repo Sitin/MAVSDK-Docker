@@ -30,5 +30,8 @@ case "${platform}" in
     exit 1
 esac
 
-curl -L "https://github.com/mavlink/MAVSDK/releases/download/v${version}/${distribution}" -o "${destination}"
+load_url="https://github.com/mavlink/MAVSDK/releases/download/v${version}/${distribution}"
+
+echo "Loading MAVSDK distribution from ${load_url}"
+curl -L "${load_url}" -o "${destination}"
 chmod +x "${destination}"
