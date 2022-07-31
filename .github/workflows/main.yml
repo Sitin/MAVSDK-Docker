@@ -1,4 +1,4 @@
-name: Publish Docker
+name: Publish to Docker registry
 on:
   push:
     branches:
@@ -15,9 +15,15 @@ jobs:
     steps:
       # Checkout repository
       - uses: actions/checkout@master
-      # Retrieve the latest tag to use as MAVSDK release tag.
-      - name: Set MAVSDK release tag
-        run: export MAVSDK_TAG="$(shell git describe --tags --abbrev=0 2>/dev/null || echo "v1.4.4")"
+      # https://github.com/actions-ecosystem/action-get-latest-tag
+      - name: Get latest tag
+        id: get-latest-tag
+        uses: actions-ecosystem/action-get-latest-tag@v1
+        with:
+          semver_only: true
+          with_initial_version: false
+      - name: Check MAVSDK tag
+        run: if [ -z ${{ steps.get-latest-tag.outputs.tag }} ]; then echo "MAVSDK tag is not specified"; exit 1; else echo "MAVSDK_TAG=${MAVSDK_TAG}"; fi
       # https://github.com/docker/setup-qemu-action
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -48,6 +54,8 @@ jobs:
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build and push
         uses: docker/build-push-action@v2
+        env:
+          MAVSDK_TAG: ${{ steps.get-latest-tag.outputs.tag }}
         with:
           # Supported platforms
           platforms: linux/amd64,linux/arm64/v8,linux/arm/v6,linux/arm/v7
