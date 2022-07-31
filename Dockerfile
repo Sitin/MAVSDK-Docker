@@ -10,7 +10,7 @@ FROM settings as download
 ARG TARGETPLATFORM
 ENV TARGETPLATFORM=${TARGETPLATFORM:-linux/amd64}
 # Define MAVSDK version
-ARG MAVSDK_TAG="v1.4.4"
+ARG MAVSDK_TAG
 
 RUN apk add --no-cache curl
 
